@@ -129,6 +129,7 @@ const sort=document.getElementById('sort');
 const showRev=document.getElementById('showRev');
 const modal=document.getElementById('modal');
 const mimg=document.getElementById('m-img');
+const toggleList=document.getElementById('toggleList');
 // draw elements
 const btnDraw1=document.getElementById('btnDraw1');
 const btnDraw3=document.getElementById('btnDraw3');
@@ -219,4 +220,3 @@ if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
   if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
   else { questionInput.classList.add('hidden'); questionInput.value=''; }
 });
-
