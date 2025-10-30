@@ -40,6 +40,14 @@
 .hidden{display:none}
     .draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
   .card-mini[data-reversed="true"] .card-img{transform:rotate(180deg);transition:transform .2s ease}
+.draw-result.triple{grid-template-columns:repeat(3,minmax(120px,1fr));gap:10px}
+@media (max-width:600px){
+  .draw-result.triple{grid-template-columns:repeat(3,minmax(100px,1fr));gap:8px}
+  .draw-result.triple .card-mini{padding:8px}
+  .draw-result.triple .card-img{height:120px}
+  .draw-result.triple h4{font-size:14px}
+  .draw-result.triple .meaning{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -61,6 +69,7 @@
   <div id="drawResult" class="draw-result" aria-live="polite"></div>
 </section>
 
+  <button id="toggleList" class="btn" type="button">📂 목록 펼치기</button>
   <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" />
   <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
   <label><input id="showRev" type="checkbox"/> 역방향 함께 보기</label>
@@ -114,6 +123,7 @@ const RUNES = [
 
 
 const grid=document.getElementById('grid');
+const toggleList=document.getElementById('toggleList');('grid');
 const q=document.getElementById('q');
 const sort=document.getElementById('sort');
 const showRev=document.getElementById('showRev');
@@ -164,6 +174,16 @@ sort.onchange=searchAndSort;
 showRev.onchange=searchAndSort;
 searchAndSort();
 
+// 목록 접기/펼치기 (기본: 접힘)
+let listOpen=false;
+if(grid) grid.style.display='none';
+if(toggleList) toggleList.textContent='📂 목록 펼치기';
+if(toggleList) toggleList.addEventListener('click',()=>{
+  listOpen=!listOpen;
+  grid.style.display=listOpen?'grid':'none';
+  toggleList.textContent = listOpen?'📁 목록 접기':'📂 목록 펼치기';
+});
+
 // --- Draw helpers ---
 function randomRune(){
   const r = RUNES[Math.floor(Math.random()*RUNES.length)];
@@ -174,7 +194,7 @@ function miniCard(r){
   const orientation = r.reversed ? '역방향' : '정방향';
   const mean = r.reversed ? ((r.rv && r.rv.trim() !== '—') ? r.rv : r.up) : r.up;
   return `
-    <article class=\"card-mini\" data-reversed=\"${r.reversed}\">
+    <article class="card-mini">
       <div class="row">
         <span class="chip">${r.code}</span>
         <span class="chip">${r.kr}</span>
@@ -189,6 +209,7 @@ function miniCard(r){
 function draw(n){
   const picked = Array.from({length:n}, ()=> randomRune());
   const qtext = (toggleQuestion && toggleQuestion.checked && questionInput && questionInput.value.trim()) ? `<div class="note">질문: ${questionInput.value.trim()}</div>` : '';
+  drawResult.classList.toggle('triple', n===3);
   drawResult.innerHTML = qtext + picked.map(miniCard).join('');
 }
 if(btnDraw1) btnDraw1.addEventListener('click', ()=> draw(1));
@@ -197,6 +218,3 @@ if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
   if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
   else { questionInput.classList.add('hidden'); questionInput.value=''; }
 });
-</script>
-</body>
-</html>
