@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NABY RUNE ORACLE CARD</title>
+  <meta name="description" content="룬 오라클 카드 해설 및 1/3카드 뽑기" />
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121823;
+      --panel-2: #0e141e;
+      --text: #e8eef6;
+      --muted: #9bb0c9;
+      --ring: #2b3a52;
+      --chip: #1a2332;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#0b1016; color:var(--text); font-family:system-ui, sans-serif; }
+    header { position:sticky;top:0;z-index:10; backdrop-filter: blur(8px); background:rgba(10,15,22,.75); border-bottom:1px solid var(--ring); }
+    .container { max-width:1100px; margin:0 auto; padding:16px; }
+    h1 { margin:0; font-size:20px; }
+    input[type="search"], select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--ring); background:var(--panel); color:var(--text); }
+    .grid { display:grid; gap:14px; padding:16px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+    .card { background:var(--panel-2); border:1px solid var(--ring); border-radius:14px; padding:14px; box-shadow:var(--shadow); }
+    .card-img{width:100%;height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--ring);margin:6px 0 10px;background:#0b0f14}
+    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--ring);background:var(--chip);color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--ring);border-radius:10px;background:var(--panel);color:var(--text);cursor:pointer;text-decoration:none;font-size:14px;}
+    dialog{width:min(760px,90vw);background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;color:var(--text);}
+    dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
+    .modal-img{width:100%;max-height:420px;object-fit:contain;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin-bottom:12px}
+    .drawbox{margin:18px 0;padding:14px;border:1px solid var(--ring);border-radius:14px;background:var(--panel);box-shadow:var(--shadow)}
+    .draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>NABY RUNE ORACLE CARD</h1>
+  </div>
+</header>
+
+<main class="container">
+  <section class="drawbox">
+    <button id="btnDraw1" class="btn">🃏 1카드 뽑기</button>
+    <button id="btnDraw3" class="btn">🃏🃏🃏 3카드 뽑기</button>
+    <div id="drawResult" class="draw-result"></div>
+  </section>
+
+  <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" />
+  <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
+  <label><input id="showRev" type="checkbox"/> 역방향 함께 보기</label>
+  <div id="grid" class="grid"></div>
+</main>
+
+<footer class="container" style="color:var(--muted);padding:40px 16px;text-align:center;border-top:1px solid var(--ring)">
+  자료 출처: NABY RUNE ORACLE CARD<br>제작 : 나비🦋, 월홍🌙
+</footer>
+
+<dialog id="modal">
+  <div style="padding:16px;border-bottom:1px solid var(--ring)">
+    <h3 id="m-name" style="margin:0"></h3>
+  </div>
+  <div style="padding:16px">
+    <img id="m-img" class="modal-img" src="" alt="" style="display:none">
+    <p><strong>정방향</strong> — <span id="m-up"></span></p>
+    <p><strong>역방향</strong> — <span id="m-rv"></span></p>
+    <button class="btn" onclick="modal.close()">닫기</button>
+  </div>
+</dialog>
+
+<script>
+const RUNES = [];
+// 기존 룬 데이터 JS 배열 그대로 붙여넣기 위치
+
+const grid=document.getElementById('grid');
+const q=document.getElementById('q');
+const sort=document.getElementById('sort');
+const showRev=document.getElementById('showRev');
+const modal=document.getElementById('modal');
+const mimg=document.getElementById('m-img');
+
+function render(list){
+  grid.innerHTML='';
+  list.forEach(r=>{
+    const el=document.createElement('article');
+    el.className='card';
+    el.innerHTML=`
+      <div class="row"><span class="chip">${r.code}</span><span class="chip">${r.kr}</span></div>
+      <div>${r.name}</div>
+      <img class="card-img" src="images/${r.code}.png" alt="${r.name}" onerror="this.style.display='none'">
+      <p><strong>정방향</strong> — ${r.up}</p>
+      ${showRev.checked?`<p><strong>역방향</strong> — ${(r.rv && r.rv.trim()!=='—')?r.rv:r.up}</p>`:''}
+      <a href="#" class="btn" data-code="${r.code}">자세히</a>
+    `;
+    el.querySelector('.btn').onclick=(e)=>{
+      e.preventDefault();
+      document.getElementById('m-name').textContent=r.name;
+      mimg.src=`images/${r.code}.png`;
+      mimg.style.display='block';
+      document.getElementById('m-up').textContent=r.up;
+      document.getElementById('m-rv').textContent=(r.rv && r.rv.trim()!=='—')?r.rv:r.up;
+      modal.showModal();
+    };
+    grid.appendChild(el);
+  });
+}
+
+function searchAndSort(){
+  const term=q.value.trim().toLowerCase();
+  let list=RUNES.filter(r=>r.name.toLowerCase().includes(term)||r.kr.toLowerCase().includes(term)||r.code.toLowerCase().includes(term));
+  if(sort.value==='name') list.sort((a,b)=>a.code.localeCompare(b.code));
+  if(sort.value==='korean') list.sort((a,b)=>a.kr.localeCompare(b.kr,'ko'));
+  render(list);
+}
+q.oninput=searchAndSort;
+sort.onchange=searchAndSort;
+showRev.onchange=searchAndSort;
+searchAndSort();
+</script>
+</body>
+</html>
