@@ -93,6 +93,8 @@
 </dialog>
 
 <script>
+// DOM이 모두 준비된 뒤에 실행하여 초기화 오류 방지
+document.addEventListener('DOMContentLoaded', ()=>{
 const RUNES = [
   {code:"Fehu", kr:"페후", name:"Fehu (페후)", up:"성취, 풍요, 성공, 재정적 안정, 수익 증가, 새로운 기회, 새로운 인연, 건강 회복 유지", rv:"손실, 에너지 정체, 소통 부재, 기회 상실, 건강 악화, 회복 지연"},
   {code:"Uruz", kr:"우루즈", name:"Uruz (우루즈)", up:"힘, 새로운 기회, 강인함, 재정적 기회, 근 시일 내 긍정적인 변화, 프로젝트 성공, 체력·활력 회복", rv:"에너지 부족, 기회 상실, 관계 갈등, 소통 부족, 열정 상실, 재정관리 문제, 좌절, 질병 가능성, 회복 지연"},
@@ -123,13 +125,12 @@ const RUNES = [
 
 
 const grid=document.getElementById('grid');
-const toggleList=document.getElementById('toggleList');('grid');
+const toggleList=document.getElementById('toggleList');
 const q=document.getElementById('q');
 const sort=document.getElementById('sort');
 const showRev=document.getElementById('showRev');
 const modal=document.getElementById('modal');
 const mimg=document.getElementById('m-img');
-const toggleList=document.getElementById('toggleList');
 // draw elements
 const btnDraw1=document.getElementById('btnDraw1');
 const btnDraw3=document.getElementById('btnDraw3');
@@ -220,3 +221,8 @@ if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
   if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
   else { questionInput.classList.add('hidden'); questionInput.value=''; }
 });
+
+});
+</script>
+</body>
+</html>
