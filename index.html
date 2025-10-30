@@ -39,7 +39,8 @@
 .note{font-size:12px;color:var(--muted)}
 .hidden{display:none}
     .draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
-  </style>
+  .card-mini[data-reversed="true"] .card-img{transform:rotate(180deg);transition:transform .2s ease}
+</style>
 </head>
 <body>
 <header>
@@ -173,7 +174,7 @@ function miniCard(r){
   const orientation = r.reversed ? '역방향' : '정방향';
   const mean = r.reversed ? ((r.rv && r.rv.trim() !== '—') ? r.rv : r.up) : r.up;
   return `
-    <article class="card-mini">
+    <article class=\"card-mini\" data-reversed=\"${r.reversed}\">
       <div class="row">
         <span class="chip">${r.code}</span>
         <span class="chip">${r.kr}</span>
@@ -199,4 +200,3 @@ if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
 </script>
 </body>
 </html>
-
