@@ -32,6 +32,12 @@
     dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
     .modal-img{width:100%;max-height:420px;object-fit:contain;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin-bottom:12px}
     .drawbox{margin:18px 0;padding:14px;border:1px solid var(--ring);border-radius:14px;background:var(--panel);box-shadow:var(--shadow)}
+.draw-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card-mini{background:var(--panel-2);border:1px solid var(--ring);border-radius:12px;padding:12px}
+.card-mini h4{margin:6px 0 4px;font-size:16px}
+.note{font-size:12px;color:var(--muted)}
+.hidden{display:none}
     .draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
   </style>
 </head>
@@ -44,10 +50,15 @@
 
 <main class="container">
   <section class="drawbox">
-    <button id="btnDraw1" class="btn">🃏 1카드 뽑기</button>
-    <button id="btnDraw3" class="btn">🃏🃏🃏 3카드 뽑기</button>
-    <div id="drawResult" class="draw-result"></div>
-  </section>
+  <div class="draw-actions">
+    <label class="chip"><input id="toggleQuestion" type="checkbox"> 질문 입력 칸 표시</label>
+    <input id="questionInput" type="search" class="hidden" placeholder="질문을 적어 주세요 (선택)">
+    <button id="btnDraw1" class="btn" type="button">🃏 1카드 뽑기</button>
+    <button id="btnDraw3" class="btn" type="button">🃏🃏🃏 3카드 뽑기</button>
+    <span class="note">* 질문 입력은 선택 사항이며, 입력하지 않아도 뽑기가 가능합니다.</span>
+  </div>
+  <div id="drawResult" class="draw-result" aria-live="polite"></div>
+</section>
 
   <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" />
   <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
@@ -107,6 +118,12 @@ const sort=document.getElementById('sort');
 const showRev=document.getElementById('showRev');
 const modal=document.getElementById('modal');
 const mimg=document.getElementById('m-img');
+// draw elements
+const btnDraw1=document.getElementById('btnDraw1');
+const btnDraw3=document.getElementById('btnDraw3');
+const drawResult=document.getElementById('drawResult');
+const toggleQuestion=document.getElementById('toggleQuestion');
+const questionInput=document.getElementById('questionInput');
 
 function render(list){
   grid.innerHTML='';
@@ -145,6 +162,41 @@ q.oninput=searchAndSort;
 sort.onchange=searchAndSort;
 showRev.onchange=searchAndSort;
 searchAndSort();
+
+// --- Draw helpers ---
+function randomRune(){
+  const r = RUNES[Math.floor(Math.random()*RUNES.length)];
+  const isReversed = Math.random() < 0.5; // 50%
+  return { ...r, reversed: isReversed };
+}
+function miniCard(r){
+  const orientation = r.reversed ? '역방향' : '정방향';
+  const mean = r.reversed ? ((r.rv && r.rv.trim() !== '—') ? r.rv : r.up) : r.up;
+  return `
+    <article class="card-mini">
+      <div class="row">
+        <span class="chip">${r.code}</span>
+        <span class="chip">${r.kr}</span>
+        <span class="chip">${orientation}</span>
+      </div>
+      <h4>${r.name}</h4>
+      <img class="card-img" src="images/${r.code}.png" alt="${r.name}" onerror="this.style.display='none'">
+      <p class="meaning">${mean}</p>
+    </article>
+  `;
+}
+function draw(n){
+  const picked = Array.from({length:n}, ()=> randomRune());
+  const qtext = (toggleQuestion && toggleQuestion.checked && questionInput && questionInput.value.trim()) ? `<div class="note">질문: ${questionInput.value.trim()}</div>` : '';
+  drawResult.innerHTML = qtext + picked.map(miniCard).join('');
+}
+if(btnDraw1) btnDraw1.addEventListener('click', ()=> draw(1));
+if(btnDraw3) btnDraw3.addEventListener('click', ()=> draw(3));
+if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
+  if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
+  else { questionInput.classList.add('hidden'); questionInput.value=''; }
+});
 </script>
 </body>
 </html>
+
