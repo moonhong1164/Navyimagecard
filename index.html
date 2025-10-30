@@ -176,12 +176,13 @@ searchAndSort();
 
 // 목록 접기/펼치기 (기본: 접힘)
 let listOpen=false;
-if(grid) grid.style.display='none';
-if(toggleList) toggleList.textContent='📂 목록 펼치기';
+if(grid){ grid.style.display='none'; }
+if(toggleList){ toggleList.textContent='📂 목록 펼치기'; }
 if(toggleList) toggleList.addEventListener('click',()=>{
   listOpen=!listOpen;
-  grid.style.display=listOpen?'grid':'none';
-  toggleList.textContent = listOpen?'📁 목록 접기':'📂 목록 펼치기';
+  const showing = listOpen ? 'grid' : 'none';
+  if(grid) grid.style.display = showing;
+  if(toggleList) toggleList.textContent = listOpen ? '📁 목록 접기' : '📂 목록 펼치기';
 });
 
 // --- Draw helpers ---
@@ -194,7 +195,7 @@ function miniCard(r){
   const orientation = r.reversed ? '역방향' : '정방향';
   const mean = r.reversed ? ((r.rv && r.rv.trim() !== '—') ? r.rv : r.up) : r.up;
   return `
-    <article class="card-mini">
+    <article class=\"card-mini\" data-reversed=\"${r.reversed}\">
       <div class="row">
         <span class="chip">${r.code}</span>
         <span class="chip">${r.kr}</span>
@@ -218,3 +219,4 @@ if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
   if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
   else { questionInput.classList.add('hidden'); questionInput.value=''; }
 });
+
