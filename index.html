@@ -17,7 +17,12 @@
     .grid{display:grid;gap:14px;padding:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
     .card{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
     /* ▶ 이미지 원본 비율 유지 (잘림 방지) */
-    .card-img{width:100%;height:auto;object-fit:contain;border-radius:12px;border:1px solid var(--ring);margin:6px 0 10px;background:#0b0f14}
+    .card-img{display:block;width:100%;height:auto;object-fit:contain;background:#0b0f14;margin:0}
+/* 텍스트가 인쇄된 상/하단을 가리는 프레임 */
+.img-frame{position:relative;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin:6px 0 10px;overflow:hidden}
+.img-frame::before,.img-frame::after{content:"";position:absolute;left:0;right:0;height:16%;background:#0b0f14}
+.img-frame::before{top:0}
+.img-frame::after{bottom:0}
     .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--ring);background:var(--chip);color:var(--muted)}
     .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--ring);border-radius:10px;background:var(--panel);color:var(--text);cursor:pointer;text-decoration:none;font-size:14px}
@@ -70,7 +75,7 @@
     <h3 id="m-name" style="margin:0"></h3>
   </div>
   <div style="padding:16px">
-    <img id="m-img" class="modal-img" src="" alt="" style="display:none">
+    <div class="img-frame" id="m-frame" style="display:none"><img id="m-img" class="modal-img" src="" alt=""></div>
     <p><strong>정방향</strong> — <span id="m-up"></span></p>
     <p><strong>역방향</strong> — <span id="m-rv"></span></p>
     <button class="btn" onclick="modal.close()">닫기</button>
@@ -126,10 +131,7 @@ function render(list){
   list.forEach(r=>{
     const el=document.createElement('article');
     el.className='card';
-    el.innerHTML=`
-      <div class="row"><span class="chip">${r.code}</span><span class="chip">${r.kr}</span></div>
-      <div>${r.name}</div>
-      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
+    el.innerHTML=`$1<div class=\"img-frame\"><img class=\"card-img\" src=\"images/${r.code}.png\" alt=\"${r.name}\"></div>
       <p><strong>정방향</strong> — ${r.up}</p>
       ${showRev.checked?`<p><strong>역방향</strong> — ${(r.rv && r.rv.trim()!=='—')?r.rv:r.up}</p>`:''}
       <a href="#" class="btn" data-code="${r.code}">자세히</a>
@@ -138,7 +140,7 @@ function render(list){
       e.preventDefault();
       document.getElementById('m-name').textContent=r.name;
       mimg.src=`images/${r.code}.png`;
-      mimg.style.display='block';
+      document.getElementById('m-frame').style.display='block';
       document.getElementById('m-up').textContent=r.up;
       document.getElementById('m-rv').textContent=(r.rv && r.rv.trim()!=='—')?r.rv:r.up;
       modal.showModal();
@@ -186,7 +188,7 @@ function miniCard(r){
         <span class="chip">${orientation}</span>
       </div>
       <h4>${r.name}</h4>
-      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
+      <div class=\"img-frame\"><img class=\"card-img\" src=\"images/${r.code}.png\" alt=\"${r.name}\"></div>
       <p class="meaning">${mean}</p>
     </article>
   `;
