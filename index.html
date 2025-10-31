@@ -26,10 +26,6 @@ input[type="search"],select{
 .img-frame{position:relative;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin:6px 0 10px;overflow:hidden}
 .img-frame img{display:block;width:100%;height:auto;object-fit:contain;background:#0b0f14}
 
-/* 상하단 가림 제거 → 전체 이미지 출력 */
-.img-frame::before,
-.img-frame::after{display:none}
-
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--ring);background:var(--chip);color:var(--muted)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--ring);border-radius:10px;background:var(--panel);color:var(--text);cursor:pointer;text-decoration:none;font-size:14px}
@@ -48,7 +44,7 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 .card-mini{background:var(--panel-2);border:1px solid var(--ring);border-radius:12px;padding:12px}
 .card-mini h4{margin:6px 0 4px;font-size:16px}
 
-/* ✅ 역방향이면 이미지 180도 회전 */
+/* ✅ 역방향이면 이미지만 회전 */
 .card-mini[data-reversed="true"] img{
   transform:rotate(180deg);
   transition:transform .2s;
@@ -80,16 +76,13 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
     <button id="draw3" class="btn" type="button">🃏🃏🃏 3카드 뽑기</button>
   </div>
 
-  <!-- ✅ 질문은 항상 버튼 아래 고정 -->
   <div id="questionBox" class="draw-question hidden"></div>
-
   <div id="drawResult" class="draw-result"></div>
 </section>
 
 <button id="toggleList" class="btn" type="button">📂 목록 펼치기</button>
 <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" />
 <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
-<label><input id="showRev" type="checkbox"> 역방향 함께 보기</label>
 
 <div id="grid" class="grid" style="display:none"></div>
 
@@ -114,8 +107,8 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
 
-/* ✅ 룬 데이터 */
-const RUNES=[
+const RUNES=[ /* (생략 없이 기존 데이터 그대로 유지) */ 
+// === 여기에 기존 RUNES 데이터 그대로 유지 ===
 {code:"Fehu",kr:"페후",name:"Fehu (페후)",up:"성취, 풍요, 성공, 재정적 안정, 수익 증가, 새로운 기회, 새로운 인연, 건강 회복 유지",rv:"손실, 에너지 정체, 소통 부재, 기회 상실, 건강 악화, 회복 지연"},
 {code:"Uruz",kr:"우루즈",name:"Uruz (우루즈)",up:"힘, 새로운 기회, 강인함, 재정적 기회, 근 시일 내 긍정적인 변화, 프로젝트 성공, 체력·활력 회복",rv:"에너지 부족, 기회 상실, 관계 갈등, 소통 부족, 열정 상실, 재정관리 문제, 좌절, 질병 가능성, 회복 지연"},
 {code:"Thurisaz",kr:"투리사즈",name:"Þurisaz (투리사즈)",up:"위험, 갈등, 경고, 갈등 극복, 신뢰 구축, 재정적 방어태세, 도전과 시험, 기회와 준비",rv:"준비 부족, 충동적인 결정, 실수, 안일함, 자신감 부족, 갈등 심화, 면역력 저하, 건강관리 필수"},
@@ -143,11 +136,10 @@ const RUNES=[
 {code:"Yr",kr:"이르",name:"Yr (이르)",up:"무한한 가능성, 새 인연, 기회, 회복, 새로운 루틴 발견",rv:"무한한 가능성, 새 인연, 기회, 회복, 새로운 루틴 발견"}
 ];
 
-/* 요소 */
+/* DOM 요소 */
 const grid=document.getElementById('grid');
 const q=document.getElementById('q');
 const sort=document.getElementById('sort');
-const showRev=document.getElementById('showRev');
 const modal=document.getElementById('modal');
 const mName=document.getElementById('m-name');
 const mImg=document.getElementById('m-img');
@@ -173,8 +165,8 @@ function render(list){
         <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
       </div>
       <p><strong>정방향</strong> — ${r.up}</p>
-      ${showRev.checked?`<p><strong>역방향</strong> — ${(r.rv && r.rv!=='—')?r.rv:r.up}</p>`:''}
-      <a href="#" class="btn" data-code="${r.code}">자세히</a>
+      <p><strong>역방향</strong> — ${(r.rv && r.rv!=='—')?r.rv:r.up}</p>
+      <a href="#" class="btn">자세히</a>
     `;
     el.querySelector('.btn').onclick=(e)=>{
       e.preventDefault();
@@ -202,10 +194,9 @@ function searchAndSort(){
 }
 q.oninput=searchAndSort;
 sort.onchange=searchAndSort;
-showRev.onchange=searchAndSort;
 searchAndSort();
 
-/* 목록 접기 기본: 숨김 */
+/* 목록 접기 기본 숨김 */
 let listOpen=false;
 grid.style.display='none';
 toggleList.textContent='📂 목록 펼치기';
@@ -221,7 +212,7 @@ function randomRune(){
   return {...r, reversed:Math.random()<0.5};
 }
 
-/* 뽑기 카드 html */
+/* 뽑기 카드 */
 function miniCard(r){
   const orientation=r.reversed?'역방향':'정방향';
   const meaning=r.reversed?((r.rv && r.rv!=='—')?r.rv:r.up):r.up;
@@ -233,9 +224,7 @@ function miniCard(r){
       <span class="chip">${orientation}</span>
     </div>
     <h4>${r.name}</h4>
-    <div class="img-frame">
-      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
-    </div>
+    <div class="img-frame"><img class="card-img" src="images/${r.code}.png"></div>
     <p>${meaning}</p>
   </article>`;
 }
@@ -259,7 +248,7 @@ function draw(n){
 draw1.onclick=()=>draw(1);
 draw3.onclick=()=>draw(3);
 
-/* 질문칸 표시 토글 */
+/* 질문칸 토글 */
 toggleQuestion.onchange=()=>{
   if(toggleQuestion.checked){
     questionInput.classList.remove('hidden');
