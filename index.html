@@ -1,88 +1,246 @@
 <!doctype html>
-
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NABY RUNE ORACLE CARD</title>
   <meta name="description" content="룬 오라클 카드 해설 및 1/3카드 뽑기" />
+
   <style>
-    :root { --bg:#0b0f14; --panel:#121823; --panel-2:#0e141e; --text:#e8eef6; --muted:#9bb0c9; --ring:#2b3a52; --chip:#1a2332; --shadow:0 10px 30px rgba(0,0,0,.45);} 
-    *{box-sizing:border-box}
-    body{margin:0;background:#0b1016;color:var(--text);font-family:system-ui, sans-serif}
-    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(10,15,22,.75);border-bottom:1px solid var(--ring)}
-    .container{max-width:1100px;margin:0 auto;padding:16px}
-    h1{margin:0;font-size:20px}
-    input[type="search"],select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--ring);background:var(--panel);color:var(--text)}
-    .grid{display:grid;gap:14px;padding:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-    .card{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
-    /* ▶ 이미지 원본 비율 유지 (잘림 방지) */
-    .card-img{display:block;width:100%;height:auto;object-fit:contain;background:#0b0f14;margin:0}
-/* 텍스트가 인쇄된 상/하단을 가리는 프레임 */
-.img-frame{position:relative;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin:6px 0 10px;overflow:hidden}
-.img-frame::before,.img-frame::after{content:"";position:absolute;left:0;right:0;height:16%;background:#0b0f14}
-.img-frame::before{top:0}
-.img-frame::after{bottom:0}
-    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--ring);background:var(--chip);color:var(--muted)}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--ring);border-radius:10px;background:var(--panel);color:var(--text);cursor:pointer;text-decoration:none;font-size:14px}
-    dialog{width:min(760px,90vw);background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;color:var(--text)}
-    dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
-    .modal-img{width:100%;max-height:420px;object-fit:contain;border-radius:12px;border:1px solid var(--ring);background:#0b0f14;margin-bottom:12px}.drawbox{margin:18px 0;padding:14px;border:1px solid var(--ring);border-radius:14px;background:var(--panel);box-shadow:var(--shadow)}
-.draw-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.draw-question{margin-top:10px;padding:10px 12px;border:1px solid var(--ring);background:var(--panel-2);border-radius:10px;color:var(--muted)}
-.draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.card-mini{background:var(--panel-2);border:1px solid var(--ring);border-radius:12px;padding:12px}
-.card-mini h4{margin:6px 0 4px;font-size:16px}
-.hidden{display:none}
-.note{font-size:12px;color:var(--muted)}
+    :root {
+      --bg:#0b0f14;
+      --panel:#121823;
+      --panel-2:#0e141e;
+      --text:#e8eef6;
+      --muted:#9bb0c9;
+      --ring:#2b3a52;
+      --chip:#1a2332;
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+    }
 
-/* 역방향 이미지 회전 */
-.card-mini[data-reversed="true"] .card-img{transform:rotate(180deg);transition:transform .2s ease}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:#0b1016;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+    }
 
-/* 3카드 가로 정렬 고정 */
-.draw-result.triple{grid-template-columns:repeat(3,minmax(100px,1fr));gap:10px}
-@media (max-width:600px){
-  .draw-result.triple .card-mini{padding:8px}
-  .draw-result.triple .card-img{width:100%;height:auto}
-  .draw-result.triple h4{font-size:14px}
-  .draw-result.triple .meaning{font-size:13px}
-}
+    header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter:blur(8px);
+      background:rgba(10,15,22,.75);
+      border-bottom:1px solid var(--ring);
+    }
+    .container{ max-width:1100px; margin:0 auto; padding:16px; }
+
+    h1{ margin:0; font-size:20px; }
+
+    input[type="search"], select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--ring);
+      background:var(--panel);
+      color:var(--text);
+      margin:8px 0;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid var(--ring);
+      background:var(--panel);
+      color:var(--text);
+      cursor:pointer;
+      text-decoration:none;
+      font-size:14px;
+    }
+
+    /* 카드 리스트 */
+    .grid{
+      display:grid;
+      gap:14px;
+      padding:16px;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    }
+    .card{
+      background:var(--panel-2);
+      border:1px solid var(--ring);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:var(--shadow);
+    }
+
+    /* ✅ 이미지가 잘리지 않도록 강제 전체 표시 */
+    .card-img{
+      display:block;
+      width:100% !important;
+      height:auto !important;
+      object-fit:contain !important;
+      background:#0b0f14;
+      border:1px solid var(--ring);
+      border-radius:12px;
+      margin:6px 0 10px;
+    }
+
+    .row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .chip{
+      font-size:12px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--ring);
+      background:var(--chip);
+      color:var(--muted);
+    }
+
+    .drawbox{
+      margin:18px 0;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--ring);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .draw-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .draw-question{
+      margin-top:10px;
+      padding:10px 12px;
+      border:1px solid var(--ring);
+      border-radius:10px;
+      background:var(--panel-2);
+      color:var(--muted);
+    }
+
+    .draw-result{
+      display:grid;
+      gap:12px;
+      margin-top:12px;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    }
+
+    .card-mini{
+      background:var(--panel-2);
+      border:1px solid var(--ring);
+      border-radius:12px;
+      padding:12px;
+    }
+
+    /* ✅ 3카드 모바일에서도 가로 유지 */
+    .draw-result.triple{
+      grid-template-columns:repeat(3,minmax(80px,1fr));
+      gap:10px;
+    }
+
+    @media (max-width:600px){
+      .draw-result.triple .card-mini{
+        padding:6px;
+      }
+      .draw-result.triple .card-img{
+        width:100%;
+        height:auto;
+      }
+    }
+
+    .hidden{ display:none; }
+
+    /* ✅ 모달 이미지도 잘림 방지 */
+    .modal-img{
+      width:100% !important;
+      height:auto !important;
+      object-fit:contain !important;
+      background:#0b0f14;
+      border:1px solid var(--ring);
+      border-radius:12px;
+      margin-bottom:12px;
+    }
+
+    dialog{
+      width:min(760px,90vw);
+      border-radius:14px;
+      border:1px solid var(--ring);
+      background:var(--panel-2);
+      color:var(--text);
+    }
+    dialog::backdrop{
+      backdrop-filter:blur(3px);
+      background:rgba(3,7,13,.6);
+    }
 
   </style>
 </head>
 <body>
 <header>
   <div class="container"><h1>NABY RUNE ORACLE CARD</h1></div>
-</header><main class="container">
+</header>
+
+<main class="container">
+
   <section class="drawbox">
     <div class="draw-actions">
-      <label class="chip"><input id="toggleQuestion" type="checkbox"> 질문 입력 칸 표시</label>
+      <label class="chip">
+        <input id="toggleQuestion" type="checkbox"> 질문 입력 칸 표시
+      </label>
+
       <input id="questionInput" type="search" class="hidden" placeholder="질문을 적어 주세요 (선택)">
+
       <button id="btnDraw1" class="btn" type="button">🃏 1카드 뽑기</button>
       <button id="btnDraw3" class="btn" type="button">🃏🃏🃏 3카드 뽑기</button>
     </div>
-    <!-- ▶ 질문은 버튼 바로 아래 전용 박스에 고정 표시 -->
+
     <div id="questionBox" class="draw-question hidden"></div>
-    <div id="drawResult" class="draw-result" aria-live="polite"></div>
-  </section><button id="toggleList" class="btn" type="button">📂 목록 펼치기</button> <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" /> <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select> <label><input id="showRev" type="checkbox"/> 역방향 함께 보기</label>
+    <div id="drawResult" class="draw-result"></div>
+  </section>
+
+  <button id="toggleList" class="btn" type="button">📂 목록 펼치기</button>
+  <input id="q" type="search" placeholder="룬 이름 / 키워드 검색" />
+  <select id="sort">
+    <option value="name">이름순</option>
+    <option value="korean">한글순</option>
+  </select>
+
+  <label><input id="showRev" type="checkbox"/> 역방향 함께 보기</label>
 
   <div id="grid" class="grid" style="display:none"></div>
-</main><footer class="container" style="color:var(--muted);padding:40px 16px;text-align:center;border-top:1px solid var(--ring)">
-  자료 출처: NABY RUNE ORACLE CARD<br>제작 : 나비🦋, 월홍🌙
-</footer><dialog id="modal">
+</main>
+
+<footer class="container" style="color:var(--muted);padding:40px 16px;text-align:center;border-top:1px solid var(--ring)">
+  자료 출처: NABY RUNE ORACLE CARD<br>
+  제작 : 나비🦋, 월홍🌙
+</footer>
+
+<dialog id="modal">
   <div style="padding:16px;border-bottom:1px solid var(--ring)">
     <h3 id="m-name" style="margin:0"></h3>
   </div>
   <div style="padding:16px">
-    <div class="img-frame" id="m-frame" style="display:none"><img id="m-img" class="modal-img" src="" alt=""></div>
+    <img id="m-img" class="modal-img" src="" alt="" style="display:none">
     <p><strong>정방향</strong> — <span id="m-up"></span></p>
     <p><strong>역방향</strong> — <span id="m-rv"></span></p>
     <button class="btn" onclick="modal.close()">닫기</button>
   </div>
-</dialog><script>
+</dialog>
+
+<script>
 document.addEventListener('DOMContentLoaded', ()=>{
-// --- 룬 데이터 ---
+
 const RUNES = [
   {code:"Fehu", kr:"페후", name:"Fehu (페후)", up:"성취, 풍요, 성공, 재정적 안정, 수익 증가, 새로운 기회, 새로운 인연, 건강 회복 유지", rv:"손실, 에너지 정체, 소통 부재, 기회 상실, 건강 악화, 회복 지연"},
   {code:"Uruz", kr:"우루즈", name:"Uruz (우루즈)", up:"힘, 새로운 기회, 강인함, 재정적 기회, 근 시일 내 긍정적인 변화, 프로젝트 성공, 체력·활력 회복", rv:"에너지 부족, 기회 상실, 관계 갈등, 소통 부족, 열정 상실, 재정관리 문제, 좌절, 질병 가능성, 회복 지연"},
@@ -111,36 +269,39 @@ const RUNES = [
   {code:"Yr", kr:"이르", name:"Yr (이르)", up:"무한한 가능성, 운명적인 만남, 새로운 관계 시작, 예상치 못한 재정적 기회, 터닝포인트, 신체적·정서적 회복, 새로운 건강 루틴 발견", rv:"무한한 가능성, 운명적인 만남, 새로운 관계 시작, 예상치 못한 재정적 기회, 터닝포인트, 신체적·정서적 회복, 새로운 건강 루틴 발견"}
 ];
 
-const grid=document.getElementById('grid');
-const q=document.getElementById('q');
-const sort=document.getElementById('sort');
-const showRev=document.getElementById('showRev');
-const modal=document.getElementById('modal');
-const mimg=document.getElementById('m-img');
+const grid = document.getElementById('grid');
+const q = document.getElementById('q');
+const sort = document.getElementById('sort');
+const showRev = document.getElementById('showRev');
+const modal = document.getElementById('modal');
+const mimg = document.getElementById('m-img');
 
-const btnDraw1=document.getElementById('btnDraw1');
-const btnDraw3=document.getElementById('btnDraw3');
-const drawResult=document.getElementById('drawResult');
-const toggleQuestion=document.getElementById('toggleQuestion');
-const questionInput=document.getElementById('questionInput');
-const questionBox=document.getElementById('questionBox');
-const toggleList=document.getElementById('toggleList');
+const btnDraw1 = document.getElementById('btnDraw1');
+const btnDraw3 = document.getElementById('btnDraw3');
+const drawResult = document.getElementById('drawResult');
+const toggleQuestion = document.getElementById('toggleQuestion');
+const questionInput = document.getElementById('questionInput');
+const questionBox = document.getElementById('questionBox');
+const toggleList = document.getElementById('toggleList');
 
 function render(list){
   grid.innerHTML='';
   list.forEach(r=>{
     const el=document.createElement('article');
     el.className='card';
-    el.innerHTML=`$1<div class=\"img-frame\"><img class=\"card-img\" src=\"images/${r.code}.png\" alt=\"${r.name}\"></div>
+    el.innerHTML=`
+      <div class="row"><span class="chip">${r.code}</span><span class="chip">${r.kr}</span></div>
+      <h4>${r.name}</h4>
+      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
       <p><strong>정방향</strong> — ${r.up}</p>
-      ${showRev.checked?`<p><strong>역방향</strong> — ${(r.rv && r.rv.trim()!=='—')?r.rv:r.up}</p>`:''}
+      ${showRev.checked ? `<p><strong>역방향</strong> — ${(r.rv && r.rv.trim()!=='—')?r.rv:r.up}</p>` : ''}
       <a href="#" class="btn" data-code="${r.code}">자세히</a>
     `;
     el.querySelector('.btn').onclick=(e)=>{
       e.preventDefault();
       document.getElementById('m-name').textContent=r.name;
       mimg.src=`images/${r.code}.png`;
-      document.getElementById('m-frame').style.display='block';
+      mimg.style.display='block';
       document.getElementById('m-up').textContent=r.up;
       document.getElementById('m-rv').textContent=(r.rv && r.rv.trim()!=='—')?r.rv:r.up;
       modal.showModal();
@@ -151,68 +312,86 @@ function render(list){
 
 function searchAndSort(){
   const term=q.value.trim().toLowerCase();
-  let list=RUNES.filter(r=>r.name.toLowerCase().includes(term)||r.kr.toLowerCase().includes(term)||r.code.toLowerCase().includes(term));
+  let list=RUNES.filter(r =>
+    r.name.toLowerCase().includes(term) ||
+    r.kr.toLowerCase().includes(term) ||
+    r.code.toLowerCase().includes(term)
+  );
+
   if(sort.value==='name') list.sort((a,b)=>a.code.localeCompare(b.code));
   if(sort.value==='korean') list.sort((a,b)=>a.kr.localeCompare(b.kr,'ko'));
+
   render(list);
 }
-q.oninput=searchAndSort;
-sort.onchange=searchAndSort;
-showRev.onchange=searchAndSort;
+
+q.oninput = searchAndSort;
+sort.onchange = searchAndSort;
+showRev.onchange = searchAndSort;
+
 searchAndSort();
 
-// 목록 접기/펼치기 (기본: 접힘)
-let listOpen=false;
-if(grid) grid.style.display='none';
-if(toggleList) toggleList.textContent='📂 목록 펼치기';
-if(toggleList) toggleList.addEventListener('click',()=>{
-  listOpen=!listOpen;
-  grid.style.display=listOpen?'grid':'none';
-  toggleList.textContent=listOpen?'📁 목록 접기':'📂 목록 펼치기';
+/* ✅ 목록은 기본 접힘 */
+let listOpen = false;
+grid.style.display='none';
+toggleList.textContent='📂 목록 펼치기';
+
+toggleList.addEventListener('click', ()=>{
+  listOpen = !listOpen;
+  grid.style.display = listOpen ? 'grid' : 'none';
+  toggleList.textContent = listOpen ? '📁 목록 접기' : '📂 목록 펼치기';
 });
 
-// --- Draw helpers ---
 function randomRune(){
   const r = RUNES[Math.floor(Math.random()*RUNES.length)];
-  const isReversed = Math.random() < 0.5; // 50%
-  return { ...r, reversed: isReversed };
+  return { ...r, reversed: Math.random()<0.5 };
 }
+
 function miniCard(r){
   const orientation = r.reversed ? '역방향' : '정방향';
-  const mean = r.reversed ? ((r.rv && r.rv.trim() !== '—') ? r.rv : r.up) : r.up;
+  const mean = r.reversed ? ((r.rv && r.rv.trim()!=='—')?r.rv:r.up) : r.up;
   return `
-    <article class="card-mini" data-reversed="${r.reversed}">
+    <article class="card-mini">
       <div class="row">
         <span class="chip">${r.code}</span>
         <span class="chip">${r.kr}</span>
         <span class="chip">${orientation}</span>
       </div>
       <h4>${r.name}</h4>
-      <div class=\"img-frame\"><img class=\"card-img\" src=\"images/${r.code}.png\" alt=\"${r.name}\"></div>
-      <p class="meaning">${mean}</p>
-    </article>
-  `;
+      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
+      <p>${mean}</p>
+    </article>`;
 }
+
 function draw(n){
-  const picked = Array.from({length:n}, ()=> randomRune());
-  // 질문 박스에 표시(고정 위치)
-  if(toggleQuestion && toggleQuestion.checked && questionInput && questionInput.value.trim()){
+  const picked = Array.from({length:n}, ()=>randomRune());
+
+  // ✅ 질문 표시
+  if(toggleQuestion.checked && questionInput.value.trim()){
     questionBox.classList.remove('hidden');
     questionBox.textContent = `질문: ${questionInput.value.trim()}`;
-  } else {
+  } else{
     questionBox.classList.add('hidden');
-    questionBox.textContent = '';
   }
+
   drawResult.classList.toggle('triple', n===3);
   drawResult.innerHTML = picked.map(miniCard).join('');
 }
-if(btnDraw1) btnDraw1.addEventListener('click', ()=> draw(1));
-if(btnDraw3) btnDraw3.addEventListener('click', ()=> draw(3));
-if(toggleQuestion) toggleQuestion.addEventListener('change', ()=>{
-  if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
-  else { questionInput.classList.add('hidden'); questionInput.value=''; }
+
+btnDraw1.addEventListener('click', ()=>draw(1));
+btnDraw3.addEventListener('click', ()=>draw(3));
+
+toggleQuestion.addEventListener('change', ()=>{
+  if(toggleQuestion.checked){
+    questionInput.classList.remove('hidden');
+    questionInput.focus();
+  } else {
+    questionInput.classList.add('hidden');
+    questionInput.value='';
+  }
 });
 
 });
-</script></body>
+</script>
+
+</body>
 </html>
