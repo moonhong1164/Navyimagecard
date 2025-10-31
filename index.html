@@ -4,113 +4,45 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>NABY RUNE ORACLE CARD</title>
+<meta name="description" content="룬 오라클 카드 해설 및 1/3카드 뽑기"/>
 
 <style>
 :root{
-  --bg:#0b0f14;
-  --panel:#121823;
-  --panel-2:#0e141e;
-  --text:#e8eef6;
-  --muted:#9bb0c9;
-  --ring:#2b3a52;
-  --chip:#1a2332;
-  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --panel:#121823; --panel-2:#0e141e; --text:#e8eef6; --muted:#9bb0c9;
+  --ring:#2b3a52; --chip:#1a2332; --shadow:0 10px 30px rgba(0,0,0,.45);
 }
-body{
-  margin:0;
-  background:#0b1016;
-  color:var(--text);
-  font-family:system-ui, sans-serif;
-}
-header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  backdrop-filter:blur(8px);
-  background:rgba(10,15,22,.75);
-  border-bottom:1px solid var(--ring);
-}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1016;color:var(--text);font-family:system-ui, sans-serif}
+header{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(10,15,22,.75);border-bottom:1px solid var(--ring)}
 .container{max-width:1100px;margin:0 auto;padding:16px}
 h1{margin:0;font-size:20px}
 
-.btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 12px;border-radius:10px;
-  border:1px solid var(--ring);background:var(--panel);
-  color:var(--text);cursor:pointer;text-decoration:none;font-size:14px;
-}
+input[type="search"],select{width:100%;padding:10px 12px;margin:8px 0;border-radius:10px;border:1px solid var(--ring);background:var(--panel);color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--ring);background:var(--panel);color:var(--text);cursor:pointer;text-decoration:none;font-size:14px}
 
-input[type="search"],select{
-  width:100%;padding:10px 12px;margin:8px 0;
-  border-radius:10px;border:1px solid var(--ring);
-  background:var(--panel);color:var(--text);
-}
+.grid{display:grid;gap:14px;padding:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
 
-/* 카드 리스트 */
-.grid{
-  display:grid;gap:14px;padding:16px;
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-}
-.card{
-  background:var(--panel-2);
-  border:1px solid var(--ring);
-  border-radius:14px;padding:14px;
-  box-shadow:var(--shadow);
-}
-.card-img{
-  display:block;width:100% !important;height:auto !important;
-  object-fit:contain !important;
-  border:1px solid var(--ring);border-radius:12px;background:#0b0f14;margin:6px 0 10px;
-}
-
+.card-img{display:block;width:100% !important;height:auto !important;object-fit:contain !important;background:#0b0f14;border:1px solid var(--ring);border-radius:12px;margin:6px 0 10px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.chip{
-  font-size:12px;padding:2px 8px;border-radius:999px;
-  border:1px solid var(--ring);background:var(--chip);color:var(--muted);
-}
+.chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--ring);background:var(--chip);color:var(--muted)}
 
-.drawbox{
-  margin:18px 0;padding:14px;border-radius:14px;
-  border:1px solid var(--ring);background:var(--panel);
-  box-shadow:var(--shadow);
-}
+.drawbox{margin:18px 0;padding:14px;border-radius:14px;border:1px solid var(--ring);background:var(--panel);box-shadow:var(--shadow)}
 .draw-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.draw-question{
-  margin-top:10px;padding:10px 12px;border:1px solid var(--ring);
-  border-radius:10px;background:var(--panel-2);color:var(--muted);
-}
+.draw-question{margin-top:10px;padding:10px 12px;border:1px solid var(--ring);border-radius:10px;background:var(--panel-2);color:var(--muted)}
 
-.draw-result{
-  display:grid;gap:12px;margin-top:12px;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-}
-.card-mini{
-  background:var(--panel-2);border:1px solid var(--ring);
-  border-radius:12px;padding:12px;
-  transition:transform .2s ease;
-}
-.card-mini[data-reversed="true"] img{transform:rotate(180deg);}
-
-.draw-result.triple{
-  grid-template-columns:repeat(3,minmax(80px,1fr));gap:10px;
-}
-
-@media(max-width:600px){
+.draw-result{display:grid;gap:12px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card-mini{background:var(--panel-2);border:1px solid var(--ring);border-radius:12px;padding:12px;transition:transform .2s ease}
+.card-mini[data-reversed="true"] .card-img{transform:rotate(180deg)}
+.draw-result.triple{grid-template-columns:repeat(3,minmax(80px,1fr));gap:10px}
+@media (max-width:600px){
   .draw-result.triple .card-mini{padding:6px}
-  .draw-result.triple img{width:100%;height:auto}
+  .draw-result.triple .card-img{width:100%;height:auto}
 }
 
 .hidden{display:none}
-
-.modal-img{
-  width:100% !important;height:auto !important;object-fit:contain;
-  border:1px solid var(--ring);border-radius:12px;background:#0b0f14;margin-bottom:12px;
-}
-
-dialog{
-  width:min(760px,90vw);border-radius:14px;
-  border:1px solid var(--ring);background:var(--panel-2);color:var(--text);
-}
+.modal-img{width:100% !important;height:auto !important;object-fit:contain !important;background:#0b0f14;border:1px solid var(--ring);border-radius:12px;margin-bottom:12px}
+dialog{width:min(760px,90vw);border-radius:14px;border:1px solid var(--ring);background:var(--panel-2);color:var(--text)}
 dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 </style>
 </head>
@@ -119,35 +51,30 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 <header><div class="container"><h1>NABY RUNE ORACLE CARD</h1></div></header>
 
 <main class="container">
+  <section class="drawbox">
+    <div class="draw-actions">
+      <label class="chip"><input id="toggleQuestion" type="checkbox"> 질문 입력 칸 표시</label>
+      <input id="questionInput" type="search" class="hidden" placeholder="질문을 적어 주세요 (선택)">
+      <button id="btnDraw1" class="btn" type="button">🃏 1카드 뽑기</button>
+      <button id="btnDraw3" class="btn" type="button">🃏🃏🃏 3카드 뽑기</button>
+    </div>
+    <div id="questionBox" class="draw-question hidden"></div>
+    <div id="drawResult" class="draw-result"></div>
+  </section>
 
-<section class="drawbox">
-  <div class="draw-actions">
-    <label class="chip"><input id="toggleQuestion" type="checkbox"> 질문 입력 칸 표시</label>
-    <input id="questionInput" type="search" class="hidden" placeholder="질문을 적어 주세요 (선택)">
-    <button id="btnDraw1" class="btn">🃏 1카드 뽑기</button>
-    <button id="btnDraw3" class="btn">🃏🃏🃏 3카드 뽑기</button>
-  </div>
-
-  <div id="questionBox" class="draw-question hidden"></div>
-  <div id="drawResult" class="draw-result"></div>
-</section>
-
-<button id="toggleList" class="btn">📂 목록 펼치기</button>
-<input id="q" type="search" placeholder="룬 이름 / 키워드 검색">
-<select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
-<label><input id="showRev" type="checkbox"> 역방향 함께 보기</label>
-<div id="grid" class="grid" style="display:none"></div>
-
+  <button id="toggleList" class="btn" type="button">📂 목록 펼치기</button>
+  <input id="q" type="search" placeholder="룬 이름 / 키워드 검색"/>
+  <select id="sort"><option value="name">이름순</option><option value="korean">한글순</option></select>
+  <label><input id="showRev" type="checkbox"/> 역방향 함께 보기</label>
+  <div id="grid" class="grid" style="display:none"></div>
 </main>
 
-<footer class="container" style="color:var(--muted);padding:40px 16px;text-align:center;border-top:1px solid var(--ring)">
-자료 출처: NABY RUNE ORACLE CARD<br>제작 : 나비🦋, 월홍🌙
+<footer class="container" style="color:#9bb0c9;padding:40px 16px;text-align:center;border-top:1px solid var(--ring)">
+  자료 출처: NABY RUNE ORACLE CARD<br/>제작 : 나비🦋, 월홍🌙
 </footer>
 
 <dialog id="modal">
-  <div style="padding:16px;border-bottom:1px solid var(--ring)">
-    <h3 id="m-name" style="margin:0"></h3>
-  </div>
+  <div style="padding:16px;border-bottom:1px solid var(--ring)"><h3 id="m-name" style="margin:0"></h3></div>
   <div style="padding:16px">
     <img id="m-img" class="modal-img" src="" alt="">
     <p><strong>정방향</strong> — <span id="m-up"></span></p>
@@ -157,12 +84,38 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 </dialog>
 
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', ()=>{
 
-/* RUNE 데이터 동일 — 생략 없이 전부 들어있음 */
-const RUNES=[ ... (당신이 쓰던 전체 RUNES 배열 그대로 넣기) ... ];
+/* ====== RUNE 데이터 (완전) ====== */
+const RUNES = [
+  {code:"Fehu", kr:"페후", name:"Fehu (페후)", up:"성취, 풍요, 성공, 재정적 안정, 수익 증가, 새로운 기회, 새로운 인연, 건강 회복 유지", rv:"손실, 에너지 정체, 소통 부재, 기회 상실, 건강 악화, 회복 지연"},
+  {code:"Uruz", kr:"우루즈", name:"Uruz (우루즈)", up:"힘, 새로운 기회, 강인함, 재정적 기회, 근 시일 내 긍정적인 변화, 프로젝트 성공, 체력·활력 회복", rv:"에너지 부족, 기회 상실, 관계 갈등, 소통 부족, 열정 상실, 재정관리 문제, 좌절, 질병 가능성, 회복 지연"},
+  {code:"Thurisaz", kr:"투리사즈", name:"Þurisaz (투리사즈)", up:"위험, 갈등, 경고, 갈등 극복, 신뢰 구축, 재정적 방어태세, 도전과 시험, 기회와 준비", rv:"준비 부족, 충동적인 결정, 실수, 안일함, 자신감 부족, 갈등 심화, 면역력 저하, 건강관리 필수"},
+  {code:"Ansuz", kr:"안수즈", name:"Ansuz (안수즈)", up:"지혜와 학습, 깊은 의사소통, 영감과 창조, 정신적 안정, 건강 회복, 재정적 기회", rv:"혼란, 오해(의사소통 차단), 갈등, 재정적 손실, 정보 왜곡, 표현 부족, 정신적 스트레스, 불안, 건강 악화"},
+  {code:"Raido", kr:"라이도", name:"Raido (라이도)", up:"여정, 이동, 조화로운 변화, 결단력, 재정적 안정과 성장, 성공적인 시작, 육체적·정신적 회복", rv:"지연, 계획의 차질, 결정력 부족, 소통 단절, 갈등 심화, 재정관리 실패, 조직 내 불균형, 건강관리 부족"},
+  {code:"Kaunan", kr:"카우나즈", name:"Kaunan (카우나즈)", up:"창의성, 깨달음, 빛, 새로운 통찰과 이해, 재정적 문제 해결, 프로젝트 성공, 육체적·정신적 회복", rv:"혼란, 정체, 소통 단절, 갈등 지속, 투자 실패, 회복 지연, 에너지 부족으로 건강 악화"},
+  {code:"Gebo", kr:"게보", name:"Gebo (게보)", up:"균형, 선물, 협력, 진솔한 관계 형성, 균형 잡힌 사랑, 경제적 이익, 목표 달성, 육체적·정신적 회복", rv:"불안, 불만족, 흐름의 방해, 기회 상실, 소통 단절, 금전손실, 좌절, 에너지 저하, 회복의 어려움, 정서불안"},
+  {code:"Wunjo", kr:"운조", name:"Wunjo (운조)", up:"행복, 성공, 조화, 기회와 도약, 새로운 만남, 관계 진전, 새로운 투자 가능성, 프로젝트 시작", rv:"—"},
+  {code:"Hagalaz", kr:"하갈라즈", name:"Hagalaz (하갈라즈)", up:"혼란, 파괴, 갑작스러운 변화(새 시작을 준비), 내적 성장 기회, 혁신과 재구성, 실패를 통한 교훈, 생활습관의 변화 필요", rv:"—"},
+  {code:"Naudiz", kr:"나우디즈", name:"Naudiz (나우디즈)", up:"결핍, 필요, 제약, 압박, 절박함, 의지와 인내, 성장 가능성, 관계 노력 필요, 절약, 신중한 건강관리 필요", rv:"—"},
+  {code:"Isaz", kr:"이사", name:"Isaz (이사)", up:"정체, 고립, 차가움, 내적 성찰, 균형 유지, 신뢰를 쌓는 시기, 자원 비축, 내실 다지기, 휴식과 회복 필요, 에너지 재충전", rv:"—"},
+  {code:"Jera", kr:"제라", name:"Jera (제라)", up:"꾸준함으로 인한 결실, 보상, 성취, 관계의 안정성, 행복, 재정적 안정, 장기 프로젝트 완료, 꾸준한 자기 관리, 건강 회복", rv:"—"},
+  {code:"Eiwaz", kr:"에이와즈", name:"Eiwaz (에이와즈)", up:"변화, 전환, 영적 성장, 인내와 끈기, 관계 어려움 극복, 재정적 회복, 정신적·육체적 재생 치유 시작, 균형을 찾음", rv:"—"},
+  {code:"Perth", kr:"페르소", name:"Perþ (페르소)", up:"운명, 기회, 가능성, 새로운 정보, 새로운 관계, 행운의 기회, 숨겨진 건강 문제의 발견·해결, 건강 개선", rv:"불확실성, 잘못된 선택, 운명 거부, 기회 상실, 갈등, 감정적 단절, 재정적 손실, 숨겨진 질병 발견, 회복 지연"},
+  {code:"Algiz", kr:"알기즈", name:"Algiz (알기즈)", up:"안전, 보호, 직관, 성공, 신뢰 강화, 경제적 안전 확보, 협력관계, 신체적·정신적 안정과 회복", rv:"취약성, 방어 부족, 관계 불안정, 신뢰 부족, 갈등, 돌발성 재정적 손실, 기회 상실, 회복 지연, 건강 악화 가능성"},
+  {code:"Sowilo", kr:"소웰로", name:"Sowilo (소웰로)", up:"승리, 성공, 활력, 사랑의 회복, 관계 발전, 재정적 안정, 경력 발전, 목표 달성, 신체적 활력 증진, 정신적 안정", rv:"—"},
+  {code:"Tiwaz", kr:"티와즈", name:"Tiwaz (티와즈)", up:"정의, 승리, 목표, 갈등 해결, 안정적 관계 형성, 재정적 성공, 장기 투자 성공, 승진, 회복력 증가", rv:"좌절, 실패, 신뢰 부족, 갈등 심화, 재정적 손실, 투자 실패, 불규칙한 생활습관, 건강 악화, 회복 지연"},
+  {code:"Berkanan", kr:"베르카노", name:"Berkanan (베르카노)", up:"성장, 치유, 새 시작, 깊이 있는 관계로 발전, 새로운 수익 창출 기회, 신체 및 정신적 치유, 건강 회복", rv:"성장의 지연, 정체, 관계 정체, 감정적 거리감, 과도한 지출, 수익 감소, 치유 지연, 건강 악화, 스트레스 증가"},
+  {code:"Ehwaz", kr:"에와즈", name:"Ehwaz (에와즈)", up:"전진, 협력, 신뢰, 깊은 유대관계 형성, 재정적 안정, 협력을 통한 프로젝트 성공, 새로운 직업 기회, 건강 개선", rv:"정체, 불화, 소통 단절, 협력 실패, 재정 손실, 목표 달성 어려움, 프로젝트 실패, 건강 회복 지연, 정서불안"},
+  {code:"Mannaz", kr:"만나즈", name:"Mannaz (만나즈)", up:"자아성찰, 조화, 협력, 상부상조, 협력적 성공, 새로운 기회, 정신 건강 개선", rv:"소외, 자기중심적 태도, 관계 단절, 오해와 갈등, 재정적 문제, 팀워크 부족, 정서불안, 스트레스 증가"},
+  {code:"Laguz", kr:"라구즈", name:"Laguz (라구즈)", up:"흐름, 직관, 치유, 현명한 투자, 재정적 안정, 내적 통찰을 통한 새로운 기회, 정서적·신체적 치유와 회복", rv:"정서 기복, 흐름의 방해, 오판과 착각, 소통 지연, 투자 지연·실수, 관계의 불균형, 회복 지연, 정서적 불안"},
+  {code:"Ingwaz", kr:"잉구즈", name:"Ingwaz (잉구즈)", up:"완성, 새로운 시작, 풍요, 가족의 형성, 장기적인 번영, 프로젝트의 성공적 마무리, 건강 증진, 새로운 활력", rv:"—"},
+  {code:"Dagaz", kr:"다가즈", name:"Dagaz (다가즈)", up:"새벽, 깨달음, 긍정적 변화, 관계의 새 출발, 갈등 해소, 재정 안정·번영, 수익 창출, 신체적 회복·활력 증진", rv:"—"},
+  {code:"Othala", kr:"오탈라", name:"Oþala (오탈라)", up:"유산, 안정, 번영, 행복, 갈등 해소, 장기적 재정 번영, 수익 창출, 가업 계승, 규칙적인 생활습관, 유전요인 관리", rv:"유산의 상실, 가족 간의 갈등, 재정 손실, 상속 문제, 재산 분쟁, 장기적 목표 달성 어려움, 스트레스"},
+  {code:"Yr", kr:"이르", name:"Yr (이르)", up:"무한한 가능성, 운명적인 만남, 새로운 관계 시작, 예상치 못한 재정적 기회, 터닝포인트, 신체적·정서적 회복, 새로운 건강 루틴 발견", rv:"무한한 가능성, 운명적인 만남, 새로운 관계 시작, 예상치 못한 재정적 기회, 터닝포인트, 신체적·정서적 회복, 새로운 건강 루틴 발견"}
+];
 
-/* DOM GET */
+/* ====== DOM ====== */
 const grid=document.getElementById('grid');
 const q=document.getElementById('q');
 const sort=document.getElementById('sort');
@@ -177,7 +130,7 @@ const questionInput=document.getElementById('questionInput');
 const questionBox=document.getElementById('questionBox');
 const toggleList=document.getElementById('toggleList');
 
-/* 카드 리스트 렌더링 */
+/* ====== 목록 렌더 ====== */
 function render(list){
   grid.innerHTML='';
   list.forEach(r=>{
@@ -191,19 +144,17 @@ function render(list){
       ${showRev.checked?`<p><strong>역방향</strong> — ${(r.rv && r.rv.trim()!=='—')?r.rv:r.up}</p>`:''}
       <a href="#" class="btn" data-code="${r.code}">자세히</a>
     `;
-    el.querySelector('.btn').onclick=(e)=>{
+    el.querySelector('.btn').addEventListener('click',(e)=>{
       e.preventDefault();
       document.getElementById('m-name').textContent=r.name;
       mimg.src=`images/${r.code}.png`;
       document.getElementById('m-up').textContent=r.up;
       document.getElementById('m-rv').textContent=(r.rv && r.rv.trim()!=='—')?r.rv:r.up;
       modal.showModal();
-    };
+    });
     grid.appendChild(el);
   });
 }
-
-/* 검색 */
 function searchAndSort(){
   const term=q.value.trim().toLowerCase();
   let list=RUNES.filter(r=>r.name.toLowerCase().includes(term)||r.kr.toLowerCase().includes(term)||r.code.toLowerCase().includes(term));
@@ -211,13 +162,14 @@ function searchAndSort(){
   if(sort.value==='korean') list.sort((a,b)=>a.kr.localeCompare(b.kr,'ko'));
   render(list);
 }
-q.oninput=searchAndSort;
-sort.onchange=searchAndSort;
-showRev.onchange=searchAndSort;
+q.addEventListener('input',searchAndSort);
+sort.addEventListener('change',searchAndSort);
+showRev.addEventListener('change',searchAndSort);
 searchAndSort();
 
-/* 목록 기본 접힘 */
+/* ====== 목록 접힘 (기본 접힘) ====== */
 let listOpen=false;
+grid.style.display='none';
 toggleList.textContent='📂 목록 펼치기';
 toggleList.addEventListener('click',()=>{
   listOpen=!listOpen;
@@ -225,17 +177,14 @@ toggleList.addEventListener('click',()=>{
   toggleList.textContent=listOpen?'📁 목록 접기':'📂 목록 펼치기';
 });
 
-/* ✅ 랜덤 카드: 방향 + 의미 정확히 일치 */
+/* ====== 뽑기 ====== */
 function randomRune(){
   const r=RUNES[Math.floor(Math.random()*RUNES.length)];
   return {...r, reversed:Math.random()<0.5};
 }
-
-/* ✅ miniCard: 방향 따라 이미지 회전 + 의미도 정확히 변경 */
 function miniCard(r){
   const orientation=r.reversed?'역방향':'정방향';
   const meaning=r.reversed?((r.rv && r.rv.trim()!=='—')?r.rv:r.up):r.up;
-
   return `
   <article class="card-mini" data-reversed="${r.reversed}">
     <div class="row">
@@ -248,37 +197,26 @@ function miniCard(r){
     <p>${meaning}</p>
   </article>`;
 }
-
-/* ✅ 뽑기 */
 function draw(n){
   const picked=Array.from({length:n},()=>randomRune());
-
   if(toggleQuestion.checked && questionInput.value.trim()){
     questionBox.classList.remove('hidden');
     questionBox.textContent=`질문: ${questionInput.value.trim()}`;
-  } else{
+  }else{
     questionBox.classList.add('hidden');
+    questionBox.textContent='';
   }
-
   drawResult.classList.toggle('triple',n===3);
   drawResult.innerHTML=picked.map(miniCard).join('');
 }
-
-btnDraw1.onclick=()=>draw(1);
-btnDraw3.onclick=()=>draw(3);
-
-toggleQuestion.onchange=()=>{
-  if(toggleQuestion.checked){
-    questionInput.classList.remove('hidden');
-    questionInput.focus();
-  }else{
-    questionInput.classList.add('hidden');
-    questionInput.value='';
-  }
-};
-
+btnDraw1.addEventListener('click',()=>draw(1));
+btnDraw3.addEventListener('click',()=>draw(3));
+toggleQuestion.addEventListener('change',()=>{
+  if(toggleQuestion.checked){ questionInput.classList.remove('hidden'); questionInput.focus(); }
+  else { questionInput.classList.add('hidden'); questionInput.value=''; }
 });
-</script>
 
+}); // DOMContentLoaded
+</script>
 </body>
 </html>
