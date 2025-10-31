@@ -60,6 +60,45 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
   .draw-result.triple img{width:100%;height:auto}
 }
 .hidden{display:none}
+
+/* ── 정/역방향 색 구분 (추가) ── */
+.pill{
+  display:inline-block; padding:2px 10px; border-radius:999px;
+  font-size:12px; font-weight:700; letter-spacing:.2px;
+  border:1px solid transparent;
+}
+.pill-up{               /* 정방향: 파랑/민트 */
+  color:#cfeaff;
+  background:linear-gradient(180deg,rgba(124,196,255,.22),rgba(119,242,198,.12));
+  border-color:rgba(124,196,255,.55);
+  text-shadow:0 1px 0 rgba(0,0,0,.25);
+}
+.pill-rv{               /* 역방향: 빨강 */
+  color:#ffd7d7;
+  background:linear-gradient(180deg,rgba(255,92,92,.25),rgba(255,0,0,.12));
+  border-color:rgba(255,120,120,.6);
+  text-shadow:0 1px 0 rgba(0,0,0,.3);
+}
+
+/* 카드 왼쪽 강조선 색상으로도 한 눈에 구분 */
+.card-mini{position:relative}
+.card-mini::before{
+  content:""; position:absolute; left:-1px; top:-1px; bottom:-1px; width:6px;
+  border-radius:12px 0 0 12px; opacity:.9;
+  background:linear-gradient(180deg,rgba(124,196,255,.65),rgba(119,242,198,.45));
+}
+.card-mini[data-reversed="true"]::before{
+  background:linear-gradient(180deg,rgba(255,100,100,.85),rgba(255,40,40,.55));
+}
+/* 테두리/내부 그림자도 상태별 구분 */
+.card-mini[data-reversed="true"]{
+  border-color:rgba(255,100,100,.55);
+  box-shadow:0 10px 24px rgba(0,0,0,.55), 0 0 0 1px rgba(255,100,100,.16) inset;
+}
+.card-mini[data-reversed="false"]{
+  border-color:rgba(124,196,255,.42);
+  box-shadow:0 10px 24px rgba(0,0,0,.55), 0 0 0 1px rgba(124,196,255,.12) inset;
+}
 </style>
 </head>
 
@@ -107,8 +146,7 @@ dialog::backdrop{backdrop-filter:blur(3px);background:rgba(3,7,13,.6)}
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
 
-const RUNES=[ /* (생략 없이 기존 데이터 그대로 유지) */ 
-// === 여기에 기존 RUNES 데이터 그대로 유지 ===
+const RUNES=[
 {code:"Fehu",kr:"페후",name:"Fehu (페후)",up:"성취, 풍요, 성공, 재정적 안정, 수익 증가, 새로운 기회, 새로운 인연, 건강 회복 유지",rv:"손실, 에너지 정체, 소통 부재, 기회 상실, 건강 악화, 회복 지연"},
 {code:"Uruz",kr:"우루즈",name:"Uruz (우루즈)",up:"힘, 새로운 기회, 강인함, 재정적 기회, 근 시일 내 긍정적인 변화, 프로젝트 성공, 체력·활력 회복",rv:"에너지 부족, 기회 상실, 관계 갈등, 소통 부족, 열정 상실, 재정관리 문제, 좌절, 질병 가능성, 회복 지연"},
 {code:"Thurisaz",kr:"투리사즈",name:"Þurisaz (투리사즈)",up:"위험, 갈등, 경고, 갈등 극복, 신뢰 구축, 재정적 방어태세, 도전과 시험, 기회와 준비",rv:"준비 부족, 충동적인 결정, 실수, 안일함, 자신감 부족, 갈등 심화, 면역력 저하, 건강관리 필수"},
@@ -212,19 +250,20 @@ function randomRune(){
   return {...r, reversed:Math.random()<0.5};
 }
 
-/* 뽑기 카드 */
+/* ✅ 뽑기 카드 (정/역방향 색상 구분) */
 function miniCard(r){
   const orientation=r.reversed?'역방향':'정방향';
   const meaning=r.reversed?((r.rv && r.rv!=='—')?r.rv:r.up):r.up;
+  const pillClass=r.reversed?'pill pill-rv':'pill pill-up';
   return `
   <article class="card-mini" data-reversed="${r.reversed}">
     <div class="row">
       <span class="chip">${r.code}</span>
       <span class="chip">${r.kr}</span>
-      <span class="chip">${orientation}</span>
+      <span class="${pillClass}">${orientation}</span>
     </div>
     <h4>${r.name}</h4>
-    <div class="img-frame"><img class="card-img" src="images/${r.code}.png"></div>
+    <div class="img-frame"><img class="card-img" src="images/${r.code}.png" alt="${r.name}"></div>
     <p>${meaning}</p>
   </article>`;
 }
