@@ -62,7 +62,7 @@ input[type="search"],select{
   box-shadow:var(--shadow);
 }
 
-/* 이미지 잘림 방지 */
+/* 이미지 잘림 방지 + 저장/드래그/길게누르기 방지 */
 .card-img,.modal-img{
   display:block;
   width:100% !important;
@@ -72,6 +72,12 @@ input[type="search"],select{
   border:1px solid var(--ring);
   background:#0b0f14;
   margin:6px 0 10px;
+
+  /* 여기부터 추가된 부분 */
+  -webkit-user-drag:none;
+  -webkit-touch-callout:none;
+  user-select:none;
+  pointer-events:none;
 }
 
 /* 칩 */
@@ -159,7 +165,8 @@ dialog::backdrop{
 </style>
 </head>
 
-<body>
+<!-- 🔐 우클릭/드래그/드롭 방지 -->
+<body oncontextmenu="return false" ondragstart="return false" ondrop="return false">
 <header><div class="container"><h1>NABY RUNE ORACLE CARD</h1></div></header>
 
 <main class="container">
