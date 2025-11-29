@@ -73,7 +73,6 @@ input[type="search"],select{
   background:#0b0f14;
   margin:6px 0 10px;
 
-  /* 여기부터 추가된 부분 */
   -webkit-user-drag:none;
   -webkit-touch-callout:none;
   user-select:none;
@@ -245,6 +244,30 @@ const RUNES = [
 /* Helper: 역방향 의미가 실제 존재하는지 판단 */
 const hasRv = (r)=> !!(r.rv && r.rv.replace(/[—\-\s]/g,'').length);
 
+/* 이미지 경로 자동 탐색 헬퍼 */
+const BASES = ["", "images/", "img/", "cards/"];
+const EXTS  = [".png",".PNG",".webp",".jpg",".JPG"];
+
+function tryNextRuneImage(img){
+  let t = parseInt(img.dataset.try || "0", 10);
+  const total = BASES.length * EXTS.length;
+  if(t >= total){
+    img.onerror = null;
+    return;
+  }
+  const base = BASES[Math.floor(t / EXTS.length)];
+  const ext  = EXTS[t % EXTS.length];
+  img.dataset.try = String(t+1);
+  img.src = encodeURI(base + img.dataset.code + ext);
+}
+
+function setRuneImg(img, code){
+  img.dataset.code = code;
+  img.dataset.try = "0";
+  img.onerror = function(){ tryNextRuneImage(this); };
+  tryNextRuneImage(img); // 첫 시도
+}
+
 /* DOM */
 const grid=document.getElementById('grid');
 const q=document.getElementById('q');
@@ -260,32 +283,59 @@ const questionInput=document.getElementById('questionInput');
 const questionBox=document.getElementById('questionBox');
 const toggleList=document.getElementById('toggleList');
 
-/* 카드 리스트 렌더링 */
+/* 카드 리스트 렌더링 (DOM 방식으로 변경) */
 function render(list){
   grid.innerHTML='';
   list.forEach(r=>{
     const el=document.createElement('article');
     el.className='card';
-    el.innerHTML=`
-      <div class="row">
-        <span class="chip">${r.code}</span>
-        <span class="chip">${r.kr}</span>
-      </div>
-      <h4>${r.name}</h4>
-      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
-      <p><strong>정방향</strong> — ${r.up}</p>
-      ${showRev.checked?`<p><strong>역방향</strong> — ${hasRv(r)?r.rv:r.up}</p>`:''}
-      <a href="#" class="btn" data-code="${r.code}">자세히</a>
-    `;
 
-    el.querySelector('.btn').onclick=(e)=>{
+    const row=document.createElement('div');
+    row.className='row';
+    const chip1=document.createElement('span');
+    chip1.className='chip';
+    chip1.textContent = r.code;
+    const chip2=document.createElement('span');
+    chip2.className='chip';
+    chip2.textContent = r.kr;
+    row.appendChild(chip1);
+    row.appendChild(chip2);
+
+    const h4=document.createElement('h4');
+    h4.textContent = r.name;
+
+    const img=document.createElement('img');
+    img.className='card-img';
+    setRuneImg(img, r.code);
+
+    const pUp=document.createElement('p');
+    pUp.innerHTML = `<strong>정방향</strong> — ${r.up}`;
+
+    let pRv = null;
+    if(showRev.checked){
+      pRv = document.createElement('p');
+      pRv.innerHTML = `<strong>역방향</strong> — ${hasRv(r)?r.rv:r.up}`;
+    }
+
+    const a=document.createElement('a');
+    a.href="#";
+    a.className='btn';
+    a.textContent='자세히';
+    a.onclick=(e)=>{
       e.preventDefault();
       document.getElementById('m-name').textContent=r.name;
-      mimg.src=`images/${r.code}.png`;
+      setRuneImg(mimg, r.code);
       document.getElementById('m-up').textContent=r.up;
       document.getElementById('m-rv').textContent=hasRv(r)?r.rv:r.up;
       modal.showModal();
     };
+
+    el.appendChild(row);
+    el.appendChild(h4);
+    el.appendChild(img);
+    el.appendChild(pUp);
+    if(pRv) el.appendChild(pRv);
+    el.appendChild(a);
     grid.appendChild(el);
   });
 }
@@ -322,24 +372,51 @@ function randomRune(){
   return {...r, reversed:Math.random()<0.5};
 }
 
-/* 뽑기 카드 */
+/* 뽑기 카드 (DOM element 반환) */
 function miniCard(r){
   const isRev=r.reversed;
   const orientation=isRev?'역방향':'정방향';
   const meaning=isRev?(hasRv(r)?r.rv:r.up):r.up;
 
-  return `
-    <article class="card-mini" data-reversed="${isRev}">
-      <div class="row">
-        <span class="chip">${r.code}</span>
-        <span class="chip">${r.kr}</span>
-        <span class="chip chip-orient ${isRev?'chip-rv':'chip-up'}">${orientation}</span>
-      </div>
-      <h4>${r.name}</h4>
-      <img class="card-img" src="images/${r.code}.png" alt="${r.name}">
-      <p>${meaning}</p>
-    </article>
-  `;
+  const art=document.createElement('article');
+  art.className='card-mini';
+  art.dataset.reversed = isRev ? "true" : "false";
+
+  const row=document.createElement('div');
+  row.className='row';
+
+  const c1=document.createElement('span');
+  c1.className='chip';
+  c1.textContent=r.code;
+
+  const c2=document.createElement('span');
+  c2.className='chip';
+  c2.textContent=r.kr;
+
+  const c3=document.createElement('span');
+  c3.className='chip chip-orient ' + (isRev?'chip-rv':'chip-up');
+  c3.textContent=orientation;
+
+  row.appendChild(c1);
+  row.appendChild(c2);
+  row.appendChild(c3);
+
+  const h4=document.createElement('h4');
+  h4.textContent=r.name;
+
+  const img=document.createElement('img');
+  img.className='card-img';
+  setRuneImg(img, r.code);
+
+  const p=document.createElement('p');
+  p.textContent=meaning;
+
+  art.appendChild(row);
+  art.appendChild(h4);
+  art.appendChild(img);
+  art.appendChild(p);
+
+  return art;
 }
 
 /* 뽑기 함수 */
@@ -354,8 +431,9 @@ function draw(n){
     questionBox.textContent='';
   }
 
+  drawResult.innerHTML='';
   drawResult.classList.toggle('triple',n===3);
-  drawResult.innerHTML=picked.map(miniCard).join('');
+  picked.forEach(r=>drawResult.appendChild(miniCard(r)));
 }
 
 btnDraw1.onclick=()=>draw(1);
